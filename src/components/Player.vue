@@ -37,7 +37,12 @@
                 <div class="video-title" style="position: absolute; width:100%; height: 60px; box-sizing: border-box; background:rgba(0, 0, 255, 0.2);">
 
                 </div>
-                <div class="control-panel" style="position: absolute; bottom: 0; width:100%; height: 60px; box-sizing: border-box; background:rgba(255, 0, 0, 0.2);">
+                <div class="control-panel">
+                    <div class="progress-panel">
+                        <div class="progress-holder"></div>
+                        <div class="buffered" :style="{width:bufferedWidth}"></div>
+                        <div class="progress" :style="{width:progressWidth}"></div>
+                    </div>
                     <button class="play" @click="playPause"></button>
                 </div>
             </div>
@@ -63,6 +68,8 @@
             return {
                 playPromise: null,
                 paused: true,
+                bufferedWidth: 0,
+                progressWidth: 0,
             }
         },
         mounted: function () {
@@ -164,6 +171,13 @@
                 console.log('suspend')
             },
             timeupdate: function () {
+                let video = this.$refs.video
+                let bp = video.buffered.end(0) / video.duration
+                let bw = bp * 100
+                let pw = video.currentTime / video.duration * 100
+                this.bufferedWidth = bw +'%'
+                this.progressWidth = pw +'%'
+                console.log(video.currentTime, video.duration)
                 console.log('timeupdate')
             },
             volumechange: function () {
@@ -183,12 +197,12 @@
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
+        background-color: black;
     }
     .video-container {
         position: relative;
         width: 100%;
         height: 100%;
-        /* background-color: black; */
         display: -webkit-box;
         display: -moz-box;
         display: -ms-flexbox;
@@ -235,6 +249,12 @@
         border-width: 10px 0 10px 18.3px;
     }
     .control-panel {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        padding: 0 20px;
+        /* background: rgba(255, 0, 0, 0.2); */
         display: none;
     }
     .video-title {
@@ -245,5 +265,34 @@
     }
     .paused .control-panel,.paused .video-title {
         display: block;
+    }
+
+    .progress-panel {
+        /* background-color: rgba(255, 255, 255, 0.3); */
+        height: 20px;
+    }
+    .progress-holder {
+        position: relative;
+        height: 5px;
+        top: 15px;
+        border-radius: 4px;
+        background: rgba(180, 180, 180, 0.3);
+        cursor: pointer;
+    }
+    .progress {
+        position: relative;
+        top: 5px;
+        height: 5px;
+        border-radius: 4px;
+        background: rgba(10, 60, 210, 0.7);
+        /* width: 20px; */
+    }
+    .buffered {
+        position: relative;
+        top: 10px;
+        height: 5px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        /* width: 30px; */
     }
 </style>
