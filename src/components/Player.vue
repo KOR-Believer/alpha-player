@@ -29,6 +29,7 @@
                 @volumechange="volumechange"
                 @waiting="waiting"
             >
+                <!-- <source src="./file_example_MP4_480_1_5MG.mp4"> -->
             </video>
             <div class="video-controls">
                 <div style="position: absolute; width:100%; top:0px; bottom:0px; box-sizing: border-box; " @click="playPause">
@@ -39,9 +40,11 @@
                 </div>
                 <div class="control-panel">
                     <div class="progress-panel">
+                        <div class="seeking" @mousedown="seekStart"></div>
                         <div class="progress-holder"></div>
                         <div class="buffered" :style="{width:bufferedWidth}"></div>
                         <div class="progress" :style="{width:progressWidth}"></div>
+                        <div class="progress-handle" :style="{left:progressWidth}"></div>
                     </div>
                     <button class="play" @click="playPause"></button>
                 </div>
@@ -74,6 +77,7 @@
         },
         mounted: function () {
             let video = this.$refs.video
+            //video.play()
             if (Hls.isSupported()) {
                 let hls = new Hls()
                 hls.loadSource('https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8')
@@ -88,7 +92,7 @@
                 video.src = 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
                 video.addEventListener('canplay', function () {
                     video.play().catch(() => {
-                        video.muted=true
+                        video.muted = true
                         video.play()
                     })
                 })
@@ -186,10 +190,19 @@
             waiting: function () {
                 console.log('waiting')
             },
+            seekStart: function () {
+                console.log('seeking st')
+            }
         }
     }
     </script>
 <style scoped>
+    * {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        box-sizing: border-box;
+    }
     .player-body {
         -webkit-touch-callout: none;
         -webkit-user-select: none;
@@ -252,7 +265,7 @@
         position: absolute;
         bottom: 0;
         width: 100%;
-        height: 60px;
+        height: 44px;
         padding: 0 20px;
         /* background: rgba(255, 0, 0, 0.2); */
         display: none;
@@ -268,31 +281,85 @@
     }
 
     .progress-panel {
-        /* background-color: rgba(255, 255, 255, 0.3); */
-        height: 20px;
+        position: relative;
+        bottom:0;
+        height: 4px;
+        width: 100%;
     }
     .progress-holder {
-        position: relative;
-        height: 5px;
-        top: 15px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        height: 4px;
         border-radius: 4px;
         background: rgba(180, 180, 180, 0.3);
-        cursor: pointer;
     }
     .progress {
-        position: relative;
-        top: 5px;
-        height: 5px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        height: 4px;
         border-radius: 4px;
-        background: rgba(10, 60, 210, 0.7);
-        /* width: 20px; */
+        /* background: rgba(10, 60, 210, 0.7); */
+        background: rgb(77, 112, 217);
     }
+    .progress-handle {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        height: 0;
+        width: 0;
+        border-radius: 8px;
+        /* background: rgba(10, 60, 210, 0.7); */
+        transition: all 0.2s;
+        background: rgb(77, 112, 217);
+    }
+
     .buffered {
-        position: relative;
-        top: 10px;
-        height: 5px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        height: 4px;
         border-radius: 4px;
-        background: rgba(255, 255, 255, 0.2);
-        /* width: 30px; */
+        background: rgba(255, 255, 255, 0.3);
+    }
+    .seeking {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        height: 4px;
+        border-radius: 4px;
+        cursor: pointer;
+        z-index: 4;
+        /* background: rgba(180, 0, 0, 0.3); */
+    }
+    .seeking:hover {
+        height: 16px;
+        margin: auto -8px;
+    }
+    .seeking:hover~.progress,
+    .seeking:hover~.buffered,
+    .seeking:hover~.progress-holder {
+        height: 6px;
+    }
+    .seeking:hover~.progress-handle {
+        height: 16px;
+        width: 16px;
+        margin: auto -8px;
     }
 </style>
