@@ -1,9 +1,18 @@
 <template>
     <div
         class="player-body"
-        :class="{paused}"
+        :class="{
+            'paused': paused,
+            'no-cursor': cursorOff
+        }"
+        @mousemove="cursorStatus"
+        @mousedown="cursorStatus"
+        :style="{width, height}"
     >
-        <div class="video-container" :style="{width, height}">
+        <div
+            class="video-container"
+            :class="{'no-events': cursorOff}"
+        >
             <video
                 ref="video"
                 @abort="abort"
@@ -32,10 +41,10 @@
                 <!-- <source src="./file_example_MP4_480_1_5MG.mp4"> -->
             </video>
             <div class="video-controls">
-                <div style="position: absolute; width:100%; top:0px; bottom:0px; box-sizing: border-box; " @click="playPause">
+                <div style="position: absolute; width:100%; top:0; bottom:0;" @mouseup="playPause">
 
                 </div>
-                <div class="video-title" style="position: absolute; width:100%; height: 60px; box-sizing: border-box; background:rgba(0, 0, 255, 0.2);">
+                <div class="video-title">
 
                 </div>
                 <div class="control-panel">
@@ -71,6 +80,8 @@
             return {
                 playPromise: null,
                 paused: true,
+                cursorOff: true,
+                cursorTimer: null,
                 bufferedWidth: 0,
                 progressWidth: 0,
             }
@@ -192,6 +203,15 @@
             },
             seekStart: function () {
                 console.log('seeking st')
+            },
+            cursorStatus: function () {
+                this.cursorOff = false
+                if (this.cursorTimer) {
+                    clearTimeout(this.cursorTimer)
+                }
+                this.cursorTimer = setTimeout(() => {
+                    this.cursorOff = true
+                }, 2000)
             }
         }
     }
@@ -202,6 +222,12 @@
         padding: 0;
         border: 0;
         box-sizing: border-box;
+    }
+    .no-cursor {
+        cursor: none;
+    }
+    .no-events {
+        pointer-events: none;
     }
     .player-body {
         -webkit-touch-callout: none;
@@ -267,10 +293,30 @@
         width: 100%;
         height: 44px;
         padding: 0 20px;
+        background: rgba(0,0,0,0);
+        background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(0,0,0,0)), color-stop(100%, rgba(0,0,0,0.4)));
+        background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+        background: -o-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+        background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=0 );
         /* background: rgba(255, 0, 0, 0.2); */
         display: none;
     }
     .video-title {
+        position: absolute;
+        width:100%;
+        height: 44px;
+        background: rgba(0,0,0,0.4);
+        background: -moz-linear-gradient(top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(0,0,0,0.4)), color-stop(100%, rgba(0,0,0,0)));
+        background: -webkit-linear-gradient(top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+        background: -o-linear-gradient(top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+        background: -ms-linear-gradient(top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+        background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+        /* background: rgba(255, 0, 0, 0.2); */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=0 );
         display: none;
     }
     .video-controls:hover .control-panel {
