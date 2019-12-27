@@ -1,6 +1,9 @@
 <template>
-      <player
-      ></player>
+    <div>
+        <player
+            title="HLS .m3u8 streams for testing"
+        ></player>
+    </div>
 </template>
 
 <script>
@@ -13,5 +16,7 @@ export default {
 }
 </script>
 <style>
-
+* {
+    margin: 0;
+}
 </style>

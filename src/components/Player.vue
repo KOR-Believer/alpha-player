@@ -7,12 +7,10 @@
         }"
         @mousemove="cursorStatus"
         @mousedown="cursorStatus"
-        :style="{width, height}"
-    >
+        :style="{width, height}">
         <div
             class="video-container"
-            :class="{'no-events': cursorOff}"
-        >
+            :class="{'no-events': cursorOff}">
             <video
                 ref="video"
                 @abort="abort"
@@ -37,23 +35,41 @@
                 @timeupdate="timeupdate"
                 @volumechange="volumechange"
                 @waiting="waiting"
-            >
-                <!-- <source src="./file_example_MP4_480_1_5MG.mp4"> -->
+                >
+                <!-- <source ref="source" src="./file_example_MP4_480_1_5MG.mp4" type="video/mp4"> -->
             </video>
             <div class="video-controls">
-                <div style="position: absolute; width:100%; top:0; bottom:0;" @mouseup="playPause">
-
+                <div class="video-cover" @mouseup="playPause">
                 </div>
-                <div class="video-title">
-
-                </div>
+                <div class="video-title">{{videoTitle}}</div>
                 <div class="control-panel">
                     <div class="progress-panel">
-                        <div class="seeking" @mousedown="seekStart"></div>
-                        <div class="progress-holder"></div>
-                        <div class="buffered" :style="{width:bufferedWidth}"></div>
-                        <div class="progress" :style="{width:progressWidth}"></div>
-                        <div class="progress-handle" :style="{left:progressWidth}"></div>
+                        <div
+                            class="seeking"
+                            @mousedown="seekStart"
+                            @mousemove="thumbnailBar">
+                        </div>
+                        <div
+                            class="progress-holder"
+                            ref="holder">
+                        </div>
+                        <div
+                            class="thumbnail-bar"
+                            :style="{width:thumbnailBarWidth}">
+                        </div>
+                        <div
+                            class="buffered"
+                            :style="{width:bufferedWidth}">
+                        </div>
+                        <div
+                            class="progress"
+                            :style="{width:progressWidth}">
+                        </div>
+                        <div
+                            class="progress-handle"
+                            :class="{block: handleDisplay}"
+                            :style="{left: progressWidth}">
+                        </div>
                     </div>
                     <button class="play" @click="playPause"></button>
                 </div>
@@ -67,6 +83,11 @@
     export default {
         name: 'Player',
         props: {
+            src: {
+                type: String,
+                default: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8'
+                // default: './file_example_MP4_480_1_5MG.mp4'
+            },
             width: {
                 type: String,
                 default: '100%'
@@ -74,54 +95,69 @@
             height: {
                 type: String,
                 default: '100vh'
-            }
+            },
+            title: {
+                type: String,
+            },
         },
         data: function () {
             return {
+                video: null,
                 playPromise: null,
                 paused: true,
+                keepPlay: true,
                 cursorOff: true,
                 cursorTimer: null,
                 bufferedWidth: 0,
                 progressWidth: 0,
+                thumbnailBarWidth: 0,
+                mousePositionX: 0,
+                handleDisplay: false,
+                videoTitle: '',
             }
         },
         mounted: function () {
-            let video = this.$refs.video
-            //video.play()
-            if (Hls.isSupported()) {
-                let hls = new Hls()
-                hls.loadSource('https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8')
-                hls.attachMedia(video)
-                hls.on(Hls.Events.MANIFEST_PARSED,function () {
-                    video.play().catch(() => {
-                        video.muted = true
-                        video.play()
+            this.videoTitle = this.title
+            this.video = this.$refs.video
+            let _this = this
+            if (this.src.substr(this.src.length - 4) == 'm3u8') {
+                if (Hls.isSupported()) {
+                    let hls = new Hls()
+                    hls.loadSource(this.src)
+                    hls.attachMedia(this.video)
+                    hls.on(Hls.Events.MANIFEST_PARSED,function () {
+                        _this.playPromise = _this.video.play().catch(() => {
+                            _this.video.muted = true
+                            _this.playPromise = _this.video.play()
+                        })
                     })
-                })
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
-                video.addEventListener('canplay', function () {
-                    video.play().catch(() => {
-                        video.muted = true
-                        video.play()
+                } else if (this.video.canPlayType('application/vnd.apple.mpegurl')) {
+                    this.video.src = this.src;
+                    this.video.addEventListener('canplay', function () {
+                        _this.playPromise = _this.video.play().catch(() => {
+                            _this.video.muted = true
+                            _this.playPromise = _this.video.play()
+                        })
                     })
-                })
+                }
+            } else {
+                // set source
             }
+
         },
         methods: {
             playPause: function() {
                 if (this.paused) {
-                    this.playPromise = this.$refs.video.play()
+                    this.playPromise = this.video.play()
                 } else {
                     if (this.playPromise) {
                         this.playPromise.then(() => {
-                            this.$refs.video.pause()
+                            this.video.pause()
                         }).catch(() => {
-                            this.$refs.video.pause()
+                            this.video.pause()
                         })
                     } else {
-                        this.$refs.video.pause()
+                        this.video.pause()
                     }
                 }
             },
@@ -186,14 +222,25 @@
                 console.log('suspend')
             },
             timeupdate: function () {
-                let video = this.$refs.video
-                let bp = video.buffered.end(0) / video.duration
-                let bw = bp * 100
-                let pw = video.currentTime / video.duration * 100
-                this.bufferedWidth = bw +'%'
-                this.progressWidth = pw +'%'
-                console.log(video.currentTime, video.duration)
                 console.log('timeupdate')
+                this.video
+                if (this.paused) {
+                    let bar = this.$refs.holder.getBoundingClientRect()
+                    if (this.mousePositionX) {
+                        let temp = ((this.mousePositionX - bar.x) / (bar.width) * 100)
+                        this.progressWidth = temp + "%"
+                    }
+                } else {
+                    let bp = 0
+                    let bw = 0
+                    let pw = 0
+                    bp = this.video.buffered.end(this.video.buffered.length-1) / this.video.duration
+                    bw = bp * 100
+                    pw = this.video.currentTime / this.video.duration * 100
+                    this.bufferedWidth = bw +'%'
+                    this.progressWidth = pw +'%'
+                    // console.log(this.video.currentTime, this.video.duration)
+                }
             },
             volumechange: function () {
                 console.log('volumechange')
@@ -201,8 +248,52 @@
             waiting: function () {
                 console.log('waiting')
             },
-            seekStart: function () {
-                console.log('seeking st')
+            seekStart: function (e) {
+                this.mousePositionX = e.clientX
+                this.keepPlay = !this.paused
+
+                if (!this.paused) {
+                    if (this.playPromise) {
+                        this.playPromise.then(() => {
+                            this.video.pause()
+                        }).catch(() => {
+                            this.video.pause()
+                        })
+                    } else {
+                        this.video.pause()
+                    }
+                }
+                let bar = this.$refs.holder.getBoundingClientRect()
+                let temp = ((this.mousePositionX - bar.x) / (bar.width) * 100)
+                this.progressWidth = temp + "%"
+                this.handleDisplay = true
+                window.addEventListener('mousemove', this.seekMove)
+                window.addEventListener('mouseup', this.seekEnd)
+            },
+            seekMove: function (e) {
+                let bar = this.$refs.holder.getBoundingClientRect()
+                this.mousePositionX = e.clientX
+                let temp = ((this.mousePositionX - bar.x) / (bar.width) * 100)
+                if (temp > 100) temp = 100
+                if (temp < 0) temp = 0
+                this.progressWidth = temp + "%"
+            },
+            seekEnd: function (e) {
+                this.mousePositionX = e.clientX
+                let bar = this.$refs.holder.getBoundingClientRect()
+                let temp = ((this.mousePositionX - bar.x) / (bar.width) * 100)
+                if (temp > 100) temp = 100
+                if (temp < 0) temp = 0
+                this.video.currentTime = ((temp * this.video.duration) / 100).toFixed(6)
+                this.progressWidth = temp + "%"
+                this.handleDisplay = false
+                this.mousePositionX = 0
+
+                if (this.keepPlay) {
+                    this.playPause()
+                }
+                window.removeEventListener('mousemove', this.seekMove)
+                window.removeEventListener('mouseup', this.seekEnd)
             },
             cursorStatus: function () {
                 this.cursorOff = false
@@ -212,6 +303,11 @@
                 this.cursorTimer = setTimeout(() => {
                     this.cursorOff = true
                 }, 2000)
+            },
+            thumbnailBar: function (e) {
+                let bar = this.$refs.holder.getBoundingClientRect()
+                let temp = ((e.clientX - bar.x) / (bar.width) * 100)
+                this.thumbnailBarWidth = temp + "%"
             }
         }
     }
@@ -318,6 +414,19 @@
         /* background: rgba(255, 0, 0, 0.2); */
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=0 );
         display: none;
+        color:white;
+        padding:0 20px;
+        font-size: 1.2rem;
+        white-space: nowrap;
+        text-overflow:ellipsis;
+        overflow: hidden;
+        line-height: 44px;
+    }
+    .video-cover {
+        position: absolute;
+        width:100%;
+        top:0;
+        bottom:0;
     }
     .video-controls:hover .control-panel {
         display: block;
@@ -366,7 +475,7 @@
         width: 0;
         border-radius: 8px;
         /* background: rgba(10, 60, 210, 0.7); */
-        transition: all 0.2s;
+        transition: width 0.2s ease, height 0.2s ease, margin 0.2s ease;
         background: rgb(77, 112, 217);
     }
 
@@ -394,16 +503,34 @@
         z-index: 4;
         /* background: rgba(180, 0, 0, 0.3); */
     }
+    .thumbnail-bar {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        height: 0;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.3);
+    }
     .seeking:hover {
         height: 16px;
         margin: auto -8px;
     }
     .seeking:hover~.progress,
     .seeking:hover~.buffered,
-    .seeking:hover~.progress-holder {
+    .seeking:hover~.progress-holder,
+    .seeking:hover~.thumbnail-bar {
         height: 6px;
     }
     .seeking:hover~.progress-handle {
+        height: 16px;
+        width: 16px;
+        margin: auto -8px;
+    }
+
+    .progress-handle.block {
         height: 16px;
         width: 16px;
         margin: auto -8px;
