@@ -36,7 +36,6 @@
                 @volumechange="volumechange"
                 @waiting="waiting"
                 >
-                <!-- <source ref="source" src="./file_example_MP4_480_1_5MG.mp4" type="video/mp4"> -->
             </video>
             <div class="video-controls">
                 <div class="video-cover" @mouseup="playPause">
@@ -71,7 +70,18 @@
                             :style="{left: progressWidth}">
                         </div>
                     </div>
-                    <button class="play" @click="playPause"></button>
+                    <div>
+                        <button
+                            class="play"
+                            @click="playPause"
+                        ></button>
+                    </div>
+                    <div class="volume-panel">
+
+                    </div>
+                    <div class="duration-panel">
+                        <span>{{formatedCurrentTime}} / {{formatedDuration}}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,7 +96,6 @@
             src: {
                 type: String,
                 default: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8'
-                // default: './file_example_MP4_480_1_5MG.mp4'
             },
             width: {
                 type: String,
@@ -114,34 +123,41 @@
                 mousePositionX: 0,
                 handleDisplay: false,
                 videoTitle: '',
+                muted: false,
+                volume: 1.0,
+                duration: 0,
+                currentTime: 0,
             }
         },
         mounted: function () {
             this.videoTitle = this.title
             this.video = this.$refs.video
-            let _this = this
             if (this.src.substr(this.src.length - 4) == 'm3u8') {
                 if (Hls.isSupported()) {
                     let hls = new Hls()
                     hls.loadSource(this.src)
                     hls.attachMedia(this.video)
-                    hls.on(Hls.Events.MANIFEST_PARSED,function () {
-                        _this.playPromise = _this.video.play().catch(() => {
-                            _this.video.muted = true
-                            _this.playPromise = _this.video.play()
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        this.playPromise = this.video.play().catch(() => {
+                            this.video.muted = true
+                            this.playPromise = this.video.play()
                         })
                     })
                 } else if (this.video.canPlayType('application/vnd.apple.mpegurl')) {
                     this.video.src = this.src;
-                    this.video.addEventListener('canplay', function () {
-                        _this.playPromise = _this.video.play().catch(() => {
-                            _this.video.muted = true
-                            _this.playPromise = _this.video.play()
+                    this.video.addEventListener('canplay', () => {
+                        this.playPromise = this.video.play().catch(() => {
+                            this.video.muted = true
+                            this.playPromise = this.video.play()
                         })
                     })
                 }
             } else {
-                // set source
+                this.video.src = this.src
+                this.playPromise = this.video.play().catch(() => {
+                    this.video.muted = true
+                    this.playPromise = this.video.play()
+                })
             }
 
         },
@@ -161,7 +177,6 @@
                     }
                 }
             },
-
             abort: function () {
                 console.log('abort')
             },
@@ -188,6 +203,7 @@
             },
             loadedmetadata: function () {
                 console.log('loadedmetadata')
+                this.duration = this.video.duration
             },
             loadstart: function () {
                 console.log('loadstart')
@@ -223,7 +239,6 @@
             },
             timeupdate: function () {
                 console.log('timeupdate')
-                this.video
                 if (this.paused) {
                     let bar = this.$refs.holder.getBoundingClientRect()
                     if (this.mousePositionX) {
@@ -239,7 +254,7 @@
                     pw = this.video.currentTime / this.video.duration * 100
                     this.bufferedWidth = bw +'%'
                     this.progressWidth = pw +'%'
-                    // console.log(this.video.currentTime, this.video.duration)
+                    this.currentTime = this.video.currentTime
                 }
             },
             volumechange: function () {
@@ -308,16 +323,43 @@
                 let bar = this.$refs.holder.getBoundingClientRect()
                 let temp = ((e.clientX - bar.x) / (bar.width) * 100)
                 this.thumbnailBarWidth = temp + "%"
+            },
+            secondsFormatter: function (seconds) {
+                let pad = (seconds) => {
+                    return seconds < 10 ? "0" + seconds : seconds
+                }
+                let timeArray = []
+                let h = Math.floor(seconds / 3600)
+                let m = Math.floor(seconds % 3600 / 60)
+                let s = Math.floor(seconds % 60)
+                if (h > 0) {
+                    timeArray.push(h)
+                    timeArray.push(pad(m))
+                } else {
+                    timeArray.push(m)
+                }
+                timeArray.push(pad(s))
+                return timeArray.join(':')
             }
-        }
+        },
+        computed: {
+            formatedDuration: function () {
+                return this.secondsFormatter(this.duration)
+            },
+            formatedCurrentTime: function () {
+                return this.secondsFormatter(this.currentTime)
+            }
+        },
     }
     </script>
 <style scoped>
+    @import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:300,400&display=swap&subset=korean');
     * {
         margin: 0;
         padding: 0;
         border: 0;
         box-sizing: border-box;
+
     }
     .no-cursor {
         cursor: none;
@@ -333,6 +375,9 @@
         -ms-user-select: none;
         user-select: none;
         background-color: black;
+        color: #ddd;
+        font-family: 'Noto Sans KR', sans-serif;
+        -webkit-font-smoothing: antialiased;
     }
     .video-container {
         position: relative;
@@ -399,6 +444,7 @@
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=0 );
         /* background: rgba(255, 0, 0, 0.2); */
         display: none;
+        flex-wrap: wrap;
     }
     .video-title {
         position: absolute;
@@ -414,7 +460,6 @@
         /* background: rgba(255, 0, 0, 0.2); */
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=0 );
         display: none;
-        color:white;
         padding:0 20px;
         font-size: 1.2rem;
         white-space: nowrap;
@@ -428,16 +473,17 @@
         top:0;
         bottom:0;
     }
-    .video-controls:hover .control-panel {
-        display: block;
+    .video-controls:hover .control-panel,.paused .control-panel {
+        display: flex;
     }
-    .paused .control-panel,.paused .video-title {
+
+    .paused .video-title {
         display: block;
     }
 
     .progress-panel {
         position: relative;
-        bottom:0;
+        bottom: 0;
         height: 4px;
         width: 100%;
     }
@@ -534,5 +580,14 @@
         height: 16px;
         width: 16px;
         margin: auto -8px;
+    }
+
+    .volume-panel,.duration-panel {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.775rem;
+        letter-spacing: 0.032rem;
+        font-weight: 300;
     }
 </style>

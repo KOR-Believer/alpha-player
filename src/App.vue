@@ -2,6 +2,7 @@
     <div>
         <player
             title="HLS .m3u8 streams for testing"
+
         ></player>
     </div>
 </template>
