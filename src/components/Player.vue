@@ -39,6 +39,13 @@
             </video>
             <div class="video-controls">
                 <div class="video-cover" @mouseup="playPause">
+                    <div
+                        v-if="fadeOut"
+                        :class="{'fade-out': fadeOut}"
+                        @animationend="fadeOut=false"
+                    >
+                        <div :class="{'dim-play': paused, 'dim-pause': !paused}"></div>
+                    </div>
                 </div>
                 <div class="video-title">{{videoTitle}}</div>
                 <div class="control-panel">
@@ -113,6 +120,7 @@
             return {
                 video: null,
                 playPromise: null,
+                fadeOut: false,
                 paused: true,
                 keepPlay: true,
                 cursorOff: true,
@@ -163,6 +171,7 @@
         },
         methods: {
             playPause: function() {
+                this.fadeOut = false
                 if (this.paused) {
                     this.playPromise = this.video.play()
                 } else {
@@ -209,11 +218,13 @@
                 console.log('loadstart')
             },
             pause: function () {
+                this.fadeOut = true
                 this.paused = true
                 console.log('pause')
             },
             play: function () {
                 console.log('play')
+                this.fadeOut = true
                 this.paused = false
             },
             playing: function () {
@@ -377,7 +388,7 @@
         background-color: black;
         color: #ddd;
         font-family: 'Noto Sans KR', sans-serif;
-        -webkit-font-smoothing: antialiased;
+        /* -webkit-font-smoothing: antialiased; */
     }
     .video-container {
         position: relative;
@@ -472,6 +483,53 @@
         width:100%;
         top:0;
         bottom:0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .fade-out {
+        background-color: rgba(0, 0, 0, 0.7);
+        border: 0;
+        border-radius: 100%;
+        width: 110px;
+        height: 110px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation-name: fade-out;
+        animation-duration: 0.5s;
+        opacity: 0;
+    }
+    .fade-out>.dim-play {
+        border: 0;
+        background: transparent;
+        box-sizing: border-box;
+        width: 0;
+        height: 40px;
+        border-color: transparent transparent transparent #ffffff;
+        border-style: double;
+        border-width: 0 0 0 34px;
+    }
+    .fade-out>.dim-pause {
+        border: 0;
+        background: transparent;
+        box-sizing: border-box;
+        width: 0;
+        height: 40px;
+        border-color: transparent transparent transparent #ffffff;
+        margin-left: 8px;
+        border-style: solid;
+        border-width: 20px 0 20px 34px;
+    }
+    @keyframes fade-out {
+        from {
+            transform: scale(0.45);
+            opacity: 1;
+        }
+        to {
+            transform: scale(0.9);
+            opacity: 0;
+        }
     }
     .video-controls:hover .control-panel,.paused .control-panel {
         display: flex;
