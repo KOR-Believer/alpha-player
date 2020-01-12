@@ -1,4 +1,4 @@
-<template>
+        <template>
     <div
         class="player-body"
         :class="{
@@ -35,15 +35,13 @@
                 @timeupdate="timeupdate"
                 @volumechange="volumechange"
                 @waiting="waiting"
-                >
-            </video>
+            ></video>
             <div class="video-controls">
                 <div class="video-cover" @mouseup="playPause">
                     <div
                         v-if="fadeOut"
                         :class="{'fade-out': fadeOut}"
-                        @animationend="fadeOut=false"
-                    >
+                        @animationend="fadeOut=false">
                         <div :class="{'dim-play': paused, 'dim-pause': !paused}"></div>
                     </div>
                 </div>
@@ -53,29 +51,30 @@
                         <div
                             class="seeking"
                             @mousedown="seekStart"
-                            @mousemove="thumbnailBar">
-                        </div>
+                            @touchstart="seekStart"
+                            @mousemove="thumbnailBar"
+                        ></div>
                         <div
                             class="progress-holder"
-                            ref="holder">
-                        </div>
+                            ref="progressHolder"
+                        ></div>
                         <div
                             class="thumbnail-bar"
-                            :style="{width:thumbnailBarWidth}">
-                        </div>
+                            :style="{width:thumbnailBarWidth+'%'}"
+                        ></div>
                         <div
                             class="buffered"
-                            :style="{width:bufferedWidth}">
-                        </div>
+                            :style="{width:bufferedWidth+'%'}"
+                        ></div>
                         <div
                             class="progress"
-                            :style="{width:progressWidth}">
-                        </div>
+                            :style="{width:progressWidth+'%'}"
+                        ></div>
                         <div
                             class="progress-handle"
                             :class="{block: handleDisplay}"
-                            :style="{left: progressWidth}">
-                        </div>
+                            :style="{left: progressWidth+'%'}"
+                        ></div>
                     </div>
                     <div>
                         <button
@@ -84,7 +83,81 @@
                         ></button>
                     </div>
                     <div class="volume-panel">
-
+                        <svg class="speaker-icon" :class="volumeIcon" width="23" height="23" viewBox="0 0 172 172" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#ffffff" d="
+                                m
+                                78.3703,21.04485
+                                c-2.41239,-0.28355 -4.97,0.45243 -6.99388,2.4763
+                                l-36.77647,36.77647
+                                l-17.1333,0
+                                c-9.46617,0 -17.1333,7.66717 -17.1333,17.1333
+                                l0,17.1333
+                                c0,9.46617 7.66717,17.1333 17.1333,17.1333
+                                l17.1333,0
+                                l36.77647,36.77647
+                                c5.397,5.397 14.62354,1.576 14.62354,-6.05691
+                                l0,-112.83903
+                                c0,-4.77057 -3.60905,-8.06062 -7.62969,-8.5332
+                                l0.00002,0.00002
+                                l0.00001,-0.00002
+                                z
+                            " />
+                            <path class="volume1" transform="translate(78.5, 21)" fill="#ffffff" d="
+                                m
+                                32.99498,26.72059
+                                c-4.31761,0.16383 -8.23203,3.78138 -8.23203,8.60013
+                                l0,0.20078
+                                c0,3.01547 1.58604,5.82198 4.23314,7.27832
+                                c7.88133,4.3433 12.90021,12.62671 12.90021,22.15292
+                                c0,9.52613 -5.01886,17.80138 -12.90021,22.13619
+                                c-2.6471,1.45633 -4.23314,4.27959 -4.23314,7.29506
+                                l0,0.18405
+                                c0,6.43357 6.9801,10.74141 12.56551,7.54604
+                                c13.0213,-7.44443 21.70108,-21.28725 21.70108,-37.16125
+                                c0,-15.874 -8.67978,-29.70825 -21.70108,-37.16125
+                                c-1.39637,-0.7967 -2.89433,-1.12544 -4.33352,-1.07083
+                                l0.00005,-0.00017
+                                l-0.00001,0.00001
+                                z
+                            " />
+                            <path class="volume2" transform="translate(111.5,48)" fill="#ffffff" d="
+                                m
+                                0.28449,-36.35809
+                                c-4.56004,-0.03151 -8.51648,3.77857 -8.51648,8.58339
+                                c0,3.78647 2.49076,7.19788 6.15729,8.13164
+                                c24.43102,6.22422 42.82158,27.17578 45.02521,52.70509
+                                c0.14691,1.70196 0.21752,3.43056 0.21752,5.17012
+                                c0,27.8331 -19.18296,51.23601 -45.24276,57.87521
+                                c-3.66653,0.93377 -6.15729,4.34518 -6.15729,8.13165
+                                c0,5.49123 5.17909,9.68595 10.50755,8.33242
+                                c33.3586,-8.47243 58.02583,-38.59053 58.02583,-74.33923
+                                c0,-35.7487 -24.66722,-65.86684 -58.02583,-74.33923
+                                c-0.66605,-0.16919 -1.33964,-0.24648 -1.99107,-0.25098
+                                l0.00004,-0.00008
+                                l-0.00001,0
+                                z
+                            " />
+                            <line class="diagonal" stroke="#ffffff" stroke-width="20.5" x1="15.80624" y1="15.80624" x2="156.19375" y2="156.19375"/>
+                        </svg>
+                        <div class="volume-wrap">
+                            <div
+                                class="volume-controlling"
+                                @mousedown="volumeControllingStart"
+                                @touchstart="volumeControllingStart"
+                            ></div>
+                            <div
+                                ref="volumeHolder"
+                                class="volume-holder"
+                            ></div>
+                            <div
+                                :style="{width:volumeWidth+'%'}"
+                                class="volume-level"
+                            ></div>
+                            <div
+                                :style="{left:volumeWidth+'%'}"
+                                class="volume-handle"
+                            ></div>
+                        </div>
                     </div>
                     <div class="duration-panel">
                         <span>{{formatedCurrentTime}} / {{formatedDuration}}</span>
@@ -128,11 +201,14 @@
                 bufferedWidth: 0,
                 progressWidth: 0,
                 thumbnailBarWidth: 0,
-                mousePositionX: 0,
+                progressClientX: 0,
+                volumeClientX: 0,
                 handleDisplay: false,
                 videoTitle: '',
                 muted: false,
                 volume: 1.0,
+                volumeWidth: 100,
+                volumeIcon: 'max',
                 duration: 0,
                 currentTime: 0,
             }
@@ -168,6 +244,18 @@
                 })
             }
 
+        },
+        watch: {
+            volumeWidth: function () {
+                this.video.volume = this.volumeWidth / 100
+                if (this.volumeWidth == 0) {
+                    this.volumeIcon = ''
+                } else if (this.volumeWidth > 50) {
+                    this.volumeIcon = 'max'
+                } else {
+                    this.volumeIcon = 'mid'
+                }
+            }
         },
         methods: {
             playPause: function() {
@@ -250,21 +338,16 @@
             },
             timeupdate: function () {
                 console.log('timeupdate')
-                if (this.paused) {
-                    let bar = this.$refs.holder.getBoundingClientRect()
-                    if (this.mousePositionX) {
-                        let temp = ((this.mousePositionX - bar.x) / (bar.width) * 100)
-                        this.progressWidth = temp + "%"
-                    }
+                if (this.progressClientX) {
+                    let bar = this.$refs.progressHolder.getBoundingClientRect()
+                    let temp = ((this.progressClientX - bar.x) / (bar.width) * 100)
+                    this.progressWidth = temp
                 } else {
-                    let bp = 0
-                    let bw = 0
-                    let pw = 0
-                    bp = this.video.buffered.end(this.video.buffered.length-1) / this.video.duration
-                    bw = bp * 100
-                    pw = this.video.currentTime / this.video.duration * 100
-                    this.bufferedWidth = bw +'%'
-                    this.progressWidth = pw +'%'
+                    let bp = this.video.buffered.end(this.video.buffered.length - 1) / this.video.duration
+                    let bw = bp * 100
+                    let pw = this.video.currentTime / this.video.duration * 100
+                    this.bufferedWidth = bw
+                    this.progressWidth = pw
                     this.currentTime = this.video.currentTime
                 }
             },
@@ -275,9 +358,7 @@
                 console.log('waiting')
             },
             seekStart: function (e) {
-                this.mousePositionX = e.clientX
                 this.keepPlay = !this.paused
-
                 if (!this.paused) {
                     if (this.playPromise) {
                         this.playPromise.then(() => {
@@ -289,38 +370,65 @@
                         this.video.pause()
                     }
                 }
-                let bar = this.$refs.holder.getBoundingClientRect()
-                let temp = ((this.mousePositionX - bar.x) / (bar.width) * 100)
-                this.progressWidth = temp + "%"
+                this.seekMove(e)
                 this.handleDisplay = true
                 window.addEventListener('mousemove', this.seekMove)
                 window.addEventListener('mouseup', this.seekEnd)
+                window.addEventListener('touchmove', this.seekMove)
+                window.addEventListener('touchend', this.seekEnd)
             },
             seekMove: function (e) {
-                let bar = this.$refs.holder.getBoundingClientRect()
-                this.mousePositionX = e.clientX
-                let temp = ((this.mousePositionX - bar.x) / (bar.width) * 100)
+                if (e.type.indexOf('mouse') == 0) {
+                    this.progressClientX = e.clientX
+                } else if (e.type.indexOf('touch') == 0) {
+                    this.progressClientX = e.touches[0].clientX
+                }
+                let bar = this.$refs.progressHolder.getBoundingClientRect()
+                let temp = ((this.progressClientX - bar.x) / (bar.width) * 100)
                 if (temp > 100) temp = 100
                 if (temp < 0) temp = 0
-                this.progressWidth = temp + "%"
+                this.progressWidth = temp
             },
-            seekEnd: function (e) {
-                this.mousePositionX = e.clientX
-                let bar = this.$refs.holder.getBoundingClientRect()
-                let temp = ((this.mousePositionX - bar.x) / (bar.width) * 100)
-                if (temp > 100) temp = 100
-                if (temp < 0) temp = 0
-                this.video.currentTime = ((temp * this.video.duration) / 100).toFixed(6)
-                this.progressWidth = temp + "%"
+            seekEnd: function () {
+                this.video.currentTime = ((this.progressWidth * this.video.duration) / 100).toFixed(6)
                 this.handleDisplay = false
-                this.mousePositionX = 0
-
+                this.progressClientX = 0
                 if (this.keepPlay) {
                     this.playPause()
                 }
                 window.removeEventListener('mousemove', this.seekMove)
                 window.removeEventListener('mouseup', this.seekEnd)
+                window.removeEventListener('touchmove', this.seekMove)
+                window.removeEventListener('touchend', this.seekEnd)
             },
+            volumeControllingStart: function (e) {
+                this.volumeControllingMove(e)
+                window.addEventListener('mousemove', this.volumeControllingMove)
+                window.addEventListener('mouseup', this.volumeControllingEnd)
+                window.addEventListener('touchmove', this.volumeControllingMove)
+                window.addEventListener('touchend', this.volumeControllingEnd)
+            },
+            volumeControllingMove: function (e) {
+                this.volumeClientX = (e.clientX) ? e.clientX : e.touches[0].clientX
+                if (e.type.indexOf('mouse') == 0) {
+                    this.volumeClientX = e.clientX
+                } else if (e.type.indexOf('touch') == 0) {
+                    this.volumeClientX = e.touches[0].clientX
+                }
+
+                let bar = this.$refs.volumeHolder.getBoundingClientRect()
+                let temp = ((this.volumeClientX - bar.x) / (bar.width) * 100)
+                if (temp > 100) temp = 100
+                if (temp < 0) temp = 0
+                this.volumeWidth = temp
+            },
+            volumeControllingEnd: function () {
+                window.removeEventListener('mousemove', this.volumeControllingMove)
+                window.removeEventListener('mouseup', this.volumeControllingEnd)
+                window.removeEventListener('touchmove', this.volumeControllingMove)
+                window.removeEventListener('touchend', this.volumeControllingEnd)
+            },
+
             cursorStatus: function () {
                 this.cursorOff = false
                 if (this.cursorTimer) {
@@ -331,9 +439,9 @@
                 }, 2000)
             },
             thumbnailBar: function (e) {
-                let bar = this.$refs.holder.getBoundingClientRect()
+                let bar = this.$refs.progressHolder.getBoundingClientRect()
                 let temp = ((e.clientX - bar.x) / (bar.width) * 100)
-                this.thumbnailBarWidth = temp + "%"
+                this.thumbnailBarWidth = temp
             },
             secondsFormatter: function (seconds) {
                 let pad = (seconds) => {
@@ -640,12 +748,98 @@
         margin: auto -8px;
     }
 
-    .volume-panel,.duration-panel {
+    .volume-panel {
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin: 0 10px;
+        transition: width 200ms ease;
+        width:107px;
+        /* background: red; */
+        overflow: hidden;
+    }
+    .volume-wrap{
+        position: absolute;
+        left:33px;
+        width: 60px;
+        margin: 0 7px;
+    }
+    .volume-controlling {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto -7px;
+        height: 14px;
+        border-radius: 4px;
+        cursor: pointer;
+        z-index: 4;
+    }
+
+    .volume-holder {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        height: 4px;
+        border-radius: 4px;
+        background: rgba(180, 180, 180, 0.3);
+    }
+    .volume-level {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        height: 4px;
+        border-radius: 4px;
+        /* background: rgba(10, 60, 210, 0.7); */
+        background: #fff;  /*  rgb(77, 112, 217); */
+    }
+
+    .volume-handle {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        height: 0;
+        width: 0;
+        border-radius: 7px;
+        background: #fff;
+        height: 14px;
+        width: 14px;
+        margin: auto -7px;
+    }
+
+    .duration-panel {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 0.775rem;
+        /* font-size: 0.775rem; */
+        font-size: 0.85rem;
         letter-spacing: 0.032rem;
-        font-weight: 300;
+        font-weight: 400;
+        margin: 0 10px;
     }
+
+    .diagonal,.volume1,.volume2{
+        transition: 200ms opacity ease;
+    }
+    .speaker-icon.max>.diagonal {
+        opacity: 0;
+    }
+
+    .speaker-icon.mid>.volume2 {
+        opacity: 0;
+    }
+    .speaker-icon.mid>.diagonal {
+        opacity: 0;
+    }
+
 </style>
