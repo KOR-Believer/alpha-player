@@ -82,61 +82,14 @@
                             @click="playPause"
                         ></button>
                     </div>
-                    <div class="volume-panel">
+                    <div
+                        class="volume-panel"
+                        :class="{'controlling': volumeControlling}"
+                        @wheel="volumeWheel">
                         <svg class="speaker-icon" :class="volumeIcon" width="23" height="23" viewBox="0 0 172 172" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="#ffffff" d="
-                                m
-                                78.3703,21.04485
-                                c-2.41239,-0.28355 -4.97,0.45243 -6.99388,2.4763
-                                l-36.77647,36.77647
-                                l-17.1333,0
-                                c-9.46617,0 -17.1333,7.66717 -17.1333,17.1333
-                                l0,17.1333
-                                c0,9.46617 7.66717,17.1333 17.1333,17.1333
-                                l17.1333,0
-                                l36.77647,36.77647
-                                c5.397,5.397 14.62354,1.576 14.62354,-6.05691
-                                l0,-112.83903
-                                c0,-4.77057 -3.60905,-8.06062 -7.62969,-8.5332
-                                l0.00002,0.00002
-                                l0.00001,-0.00002
-                                z
-                            " />
-                            <path class="volume1" transform="translate(78.5, 21)" fill="#ffffff" d="
-                                m
-                                32.99498,26.72059
-                                c-4.31761,0.16383 -8.23203,3.78138 -8.23203,8.60013
-                                l0,0.20078
-                                c0,3.01547 1.58604,5.82198 4.23314,7.27832
-                                c7.88133,4.3433 12.90021,12.62671 12.90021,22.15292
-                                c0,9.52613 -5.01886,17.80138 -12.90021,22.13619
-                                c-2.6471,1.45633 -4.23314,4.27959 -4.23314,7.29506
-                                l0,0.18405
-                                c0,6.43357 6.9801,10.74141 12.56551,7.54604
-                                c13.0213,-7.44443 21.70108,-21.28725 21.70108,-37.16125
-                                c0,-15.874 -8.67978,-29.70825 -21.70108,-37.16125
-                                c-1.39637,-0.7967 -2.89433,-1.12544 -4.33352,-1.07083
-                                l0.00005,-0.00017
-                                l-0.00001,0.00001
-                                z
-                            " />
-                            <path class="volume2" transform="translate(111.5,48)" fill="#ffffff" d="
-                                m
-                                0.28449,-36.35809
-                                c-4.56004,-0.03151 -8.51648,3.77857 -8.51648,8.58339
-                                c0,3.78647 2.49076,7.19788 6.15729,8.13164
-                                c24.43102,6.22422 42.82158,27.17578 45.02521,52.70509
-                                c0.14691,1.70196 0.21752,3.43056 0.21752,5.17012
-                                c0,27.8331 -19.18296,51.23601 -45.24276,57.87521
-                                c-3.66653,0.93377 -6.15729,4.34518 -6.15729,8.13165
-                                c0,5.49123 5.17909,9.68595 10.50755,8.33242
-                                c33.3586,-8.47243 58.02583,-38.59053 58.02583,-74.33923
-                                c0,-35.7487 -24.66722,-65.86684 -58.02583,-74.33923
-                                c-0.66605,-0.16919 -1.33964,-0.24648 -1.99107,-0.25098
-                                l0.00004,-0.00008
-                                l-0.00001,0
-                                z
-                            " />
+                            <path fill="#ffffff" d="m78.3703,21.04485c-2.41239,-0.28355 -4.97,0.45243 -6.99388,2.4763l-36.77647,36.77647l-17.1333,0c-9.46617,0 -17.1333,7.66717 -17.1333,17.1333l0,17.1333c0,9.46617 7.66717,17.1333 17.1333,17.1333l17.1333,0l36.77647,36.77647c5.397,5.397 14.62354,1.576 14.62354,-6.05691l0,-112.83903c0,-4.77057 -3.60905,-8.06062 -7.62969,-8.5332l0.00002,0.00002l0.00001,-0.00002z" />
+                            <path class="volume1" transform="translate(78.5, 21)" fill="#ffffff" d="m32.99498,26.72059c-4.31761,0.16383 -8.23203,3.78138 -8.23203,8.60013l0,0.20078c0,3.01547 1.58604,5.82198 4.23314,7.27832c7.88133,4.3433 12.90021,12.62671 12.90021,22.15292c0,9.52613 -5.01886,17.80138 -12.90021,22.13619c-2.6471,1.45633 -4.23314,4.27959 -4.23314,7.29506l0,0.18405c0,6.43357 6.9801,10.74141 12.56551,7.54604c13.0213,-7.44443 21.70108,-21.28725 21.70108,-37.16125c0,-15.874 -8.67978,-29.70825 -21.70108,-37.16125c-1.39637,-0.7967 -2.89433,-1.12544 -4.33352,-1.07083l0.00005,-0.00017l-0.00001,0.00001z" />
+                            <path class="volume2" transform="translate(111.5,48)" fill="#ffffff" d="m0.28449,-36.35809c-4.56004,-0.03151 -8.51648,3.77857 -8.51648,8.58339c0,3.78647 2.49076,7.19788 6.15729,8.13164c24.43102,6.22422 42.82158,27.17578 45.02521,52.70509c0.14691,1.70196 0.21752,3.43056 0.21752,5.17012c0,27.8331 -19.18296,51.23601 -45.24276,57.87521c-3.66653,0.93377 -6.15729,4.34518 -6.15729,8.13165c0,5.49123 5.17909,9.68595 10.50755,8.33242c33.3586,-8.47243 58.02583,-38.59053 58.02583,-74.33923c0,-35.7487 -24.66722,-65.86684 -58.02583,-74.33923c-0.66605,-0.16919 -1.33964,-0.24648 -1.99107,-0.25098l0.00004,-0.00008l-0.00001,0z" />
                             <line class="diagonal" stroke="#ffffff" stroke-width="20.5" x1="15.80624" y1="15.80624" x2="156.19375" y2="156.19375"/>
                         </svg>
                         <div class="volume-wrap">
@@ -150,11 +103,11 @@
                                 class="volume-holder"
                             ></div>
                             <div
-                                :style="{width:volumeWidth+'%'}"
+                                :style="{width:volumeWidth}"
                                 class="volume-level"
                             ></div>
                             <div
-                                :style="{left:volumeWidth+'%'}"
+                                :style="{left:volumeWidth}"
                                 class="volume-handle"
                             ></div>
                         </div>
@@ -207,8 +160,8 @@
                 videoTitle: '',
                 muted: false,
                 volume: 1.0,
-                volumeWidth: 100,
                 volumeIcon: 'max',
+                volumeControlling: false,
                 duration: 0,
                 currentTime: 0,
             }
@@ -246,11 +199,12 @@
 
         },
         watch: {
-            volumeWidth: function () {
-                this.video.volume = this.volumeWidth / 100
-                if (this.volumeWidth == 0) {
+            volume: function () {
+                this.video.volume = this.volume
+                console.log(this.volume)
+                if (this.volume == 0) {
                     this.volumeIcon = ''
-                } else if (this.volumeWidth > 50) {
+                } else if (0.5 < this.volume) {
                     this.volumeIcon = 'max'
                 } else {
                     this.volumeIcon = 'mid'
@@ -401,8 +355,16 @@
                 window.removeEventListener('touchmove', this.seekMove)
                 window.removeEventListener('touchend', this.seekEnd)
             },
+            volumeWheel: function (e) {
+                if (e.deltaY < 0) {
+                    this.volume = parseFloat((this.volume + 0.1).toFixed(1)) > 1 ? 1 : parseFloat((this.volume + 0.1).toFixed(1))
+                } else if (e.deltaY > 0) {
+                    this.volume = parseFloat((this.volume - 0.1).toFixed(1)) < 0 ? 0 : parseFloat((this.volume - 0.1).toFixed(1))
+                }
+            },
             volumeControllingStart: function (e) {
                 this.volumeControllingMove(e)
+                this.volumeControlling = true
                 window.addEventListener('mousemove', this.volumeControllingMove)
                 window.addEventListener('mouseup', this.volumeControllingEnd)
                 window.addEventListener('touchmove', this.volumeControllingMove)
@@ -417,12 +379,13 @@
                 }
 
                 let bar = this.$refs.volumeHolder.getBoundingClientRect()
-                let temp = ((this.volumeClientX - bar.x) / (bar.width) * 100)
-                if (temp > 100) temp = 100
+                let temp = (this.volumeClientX - bar.x) / (bar.width)
+                if (temp > 1) temp = 1
                 if (temp < 0) temp = 0
-                this.volumeWidth = temp
+                this.volume = temp
             },
             volumeControllingEnd: function () {
+                this.volumeControlling = false
                 window.removeEventListener('mousemove', this.volumeControllingMove)
                 window.removeEventListener('mouseup', this.volumeControllingEnd)
                 window.removeEventListener('touchmove', this.volumeControllingMove)
@@ -467,6 +430,9 @@
             },
             formatedCurrentTime: function () {
                 return this.secondsFormatter(this.currentTime)
+            },
+            volumeWidth: function () {
+                return (this.volume * 100) + '%'
             }
         },
     }
@@ -754,10 +720,15 @@
         align-items: center;
         margin: 0 10px;
         transition: width 200ms ease;
-        width:107px;
+        width:23px;
         /* background: red; */
         overflow: hidden;
     }
+    .volume-panel:hover ,.volume-panel.controlling {
+        width:107px;
+        pointer-events: initial;
+    }
+
     .volume-wrap{
         position: absolute;
         left:33px;
@@ -828,13 +799,12 @@
         margin: 0 10px;
     }
 
-    .diagonal,.volume1,.volume2{
+    .diagonal,.volume2{
         transition: 200ms opacity ease;
     }
     .speaker-icon.max>.diagonal {
         opacity: 0;
     }
-
     .speaker-icon.mid>.volume2 {
         opacity: 0;
     }
