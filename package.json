@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^3.4.3",
     "hls.js": "^0.13.0",
+    "screenfull": "^5.0.0",
     "vue": "^2.6.10"
   },
   "devDependencies": {

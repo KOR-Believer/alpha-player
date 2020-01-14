@@ -115,6 +115,25 @@
                     <div class="duration-panel">
                         <span>{{formatedCurrentTime}} / {{formatedDuration}}</span>
                     </div>
+                    <div class="screen-control-panel">
+                        <svg class="fullscreen-icon" @click="fullscreen" x="0" y="0" width="23" height="23" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 298.667 298.667" style="enable-background:new 0 0 298.667 298.667;" xml:space="preserve">
+                            <g :class="{'is-fullscreen': isFullscreen}">
+                                <g>
+                                    <polygon fill="#ffffff" points="42.667,192 0,192 0,298.667 106.667,298.667 106.667,256 42.667,256" />
+                                </g>
+                                <g>
+                                    <polygon fill="#ffffff" points="0,106.667 42.667,106.667 42.667,42.667 106.667,42.667 106.667,0 0,0" />
+                                </g>
+                                <g>
+                                    <polygon fill="#ffffff" points="192,0 192,42.667 256,42.667 256,106.667 298.667,106.667 298.667,0" />
+                                </g>
+                                <g>
+                                    <polygon fill="#ffffff" points="256,256 192,256 192,298.667 298.667,298.667 298.667,192 256,192" />
+                                </g>
+                            </g>
+                        </svg>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,6 +142,7 @@
 </template>
 <script>
     import Hls from 'hls.js'
+    import screenfull from 'screenfull'
     export default {
         name: 'Player',
         props: {
@@ -164,6 +184,7 @@
                 volumeControlling: false,
                 duration: 0,
                 currentTime: 0,
+                isFullscreen: false,
             }
         },
         mounted: function () {
@@ -195,6 +216,12 @@
                     this.video.muted = true
                     this.playPromise = this.video.play()
                 })
+            }
+
+            if (screenfull.isEnabled) {
+                screenfull.on('change', () => {
+                    this.isFullscreen = screenfull.isFullscreen
+                });
             }
 
         },
@@ -422,6 +449,11 @@
                 }
                 timeArray.push(pad(s))
                 return timeArray.join(':')
+            },
+            fullscreen: function () {
+                if (screenfull.isEnabled) {
+                    screenfull.toggle();
+                }
             }
         },
         computed: {
@@ -788,6 +820,22 @@
         margin: auto -7px;
     }
 
+    .diagonal,.volume2{
+        transition: 200ms opacity ease;
+    }
+    .speaker-icon {
+        cursor: pointer;
+    }
+    .speaker-icon.max>.diagonal {
+        opacity: 0;
+    }
+    .speaker-icon.mid>.volume2 {
+        opacity: 0;
+    }
+    .speaker-icon.mid>.diagonal {
+        opacity: 0;
+    }
+
     .duration-panel {
         display: flex;
         justify-content: center;
@@ -798,18 +846,45 @@
         font-weight: 400;
         margin: 0 10px;
     }
+    .screen-control-panel {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* font-size: 0.775rem; */
+        font-size: 0.85rem;
+        letter-spacing: 0.032rem;
+        font-weight: 400;
+        margin-right: 10px;
+        margin-left: auto;
+    }
 
-    .diagonal,.volume2{
-        transition: 200ms opacity ease;
+    .fullscreen-icon {
+        cursor: pointer;
     }
-    .speaker-icon.max>.diagonal {
-        opacity: 0;
+    .is-fullscreen>g:nth-child(1) polygon {
+        transform: rotate(180deg);
     }
-    .speaker-icon.mid>.volume2 {
-        opacity: 0;
+    .is-fullscreen>g:nth-child(2) polygon {
+        transform: rotate(180deg);
     }
-    .speaker-icon.mid>.diagonal {
-        opacity: 0;
+    .is-fullscreen>g:nth-child(3) polygon {
+        transform: rotate(180deg);
+    }
+    .is-fullscreen>g:nth-child(4) polygon {
+        transform: rotate(180deg);
+    }
+
+    .is-fullscreen>g:nth-child(1) {
+        transform: translate(110px,491px);
+    }
+    .is-fullscreen>g:nth-child(2) {
+        transform: translate(110px,103px);
+    }
+    .is-fullscreen>g:nth-child(3) {
+        transform: translate(491px,110px);
+    }
+    .is-fullscreen>g:nth-child(4) {
+        transform: translate(491px,491px);
     }
 
 </style>
