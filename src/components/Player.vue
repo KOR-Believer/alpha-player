@@ -1,4 +1,4 @@
-        <template>
+<template>
     <div
         class="player-body"
         :class="{
@@ -88,11 +88,11 @@
                         @wheel="volumeWheel">
                         <svg class="speaker-icon" :class="volumeIcon" width="23" height="23" viewBox="0 0 172 172" xmlns="http://www.w3.org/2000/svg">
                             <path fill="#ffffff" d="m78.3703,21.04485c-2.41239,-0.28355 -4.97,0.45243 -6.99388,2.4763l-36.77647,36.77647l-17.1333,0c-9.46617,0 -17.1333,7.66717 -17.1333,17.1333l0,17.1333c0,9.46617 7.66717,17.1333 17.1333,17.1333l17.1333,0l36.77647,36.77647c5.397,5.397 14.62354,1.576 14.62354,-6.05691l0,-112.83903c0,-4.77057 -3.60905,-8.06062 -7.62969,-8.5332l0.00002,0.00002l0.00001,-0.00002z" />
-                            <path class="volume1" transform="translate(78.5, 21)" fill="#ffffff" d="m32.99498,26.72059c-4.31761,0.16383 -8.23203,3.78138 -8.23203,8.60013l0,0.20078c0,3.01547 1.58604,5.82198 4.23314,7.27832c7.88133,4.3433 12.90021,12.62671 12.90021,22.15292c0,9.52613 -5.01886,17.80138 -12.90021,22.13619c-2.6471,1.45633 -4.23314,4.27959 -4.23314,7.29506l0,0.18405c0,6.43357 6.9801,10.74141 12.56551,7.54604c13.0213,-7.44443 21.70108,-21.28725 21.70108,-37.16125c0,-15.874 -8.67978,-29.70825 -21.70108,-37.16125c-1.39637,-0.7967 -2.89433,-1.12544 -4.33352,-1.07083l0.00005,-0.00017l-0.00001,0.00001z" />
-                            <path class="volume2" transform="translate(111.5,48)" fill="#ffffff" d="m0.28449,-36.35809c-4.56004,-0.03151 -8.51648,3.77857 -8.51648,8.58339c0,3.78647 2.49076,7.19788 6.15729,8.13164c24.43102,6.22422 42.82158,27.17578 45.02521,52.70509c0.14691,1.70196 0.21752,3.43056 0.21752,5.17012c0,27.8331 -19.18296,51.23601 -45.24276,57.87521c-3.66653,0.93377 -6.15729,4.34518 -6.15729,8.13165c0,5.49123 5.17909,9.68595 10.50755,8.33242c33.3586,-8.47243 58.02583,-38.59053 58.02583,-74.33923c0,-35.7487 -24.66722,-65.86684 -58.02583,-74.33923c-0.66605,-0.16919 -1.33964,-0.24648 -1.99107,-0.25098l0.00004,-0.00008l-0.00001,0z" />
-                            <line class="diagonal" stroke="#ffffff" stroke-width="20.5" x1="15.80624" y1="15.80624" x2="156.19375" y2="156.19375"/>
+                            <path fill="#ffffff" class="volume1" transform="translate(78.5, 21)" d="m32.99498,26.72059c-4.31761,0.16383 -8.23203,3.78138 -8.23203,8.60013l0,0.20078c0,3.01547 1.58604,5.82198 4.23314,7.27832c7.88133,4.3433 12.90021,12.62671 12.90021,22.15292c0,9.52613 -5.01886,17.80138 -12.90021,22.13619c-2.6471,1.45633 -4.23314,4.27959 -4.23314,7.29506l0,0.18405c0,6.43357 6.9801,10.74141 12.56551,7.54604c13.0213,-7.44443 21.70108,-21.28725 21.70108,-37.16125c0,-15.874 -8.67978,-29.70825 -21.70108,-37.16125c-1.39637,-0.7967 -2.89433,-1.12544 -4.33352,-1.07083l0.00005,-0.00017l-0.00001,0.00001z" />
+                            <path fill="#ffffff" class="volume2" transform="translate(111.5,48)" d="m0.28449,-36.35809c-4.56004,-0.03151 -8.51648,3.77857 -8.51648,8.58339c0,3.78647 2.49076,7.19788 6.15729,8.13164c24.43102,6.22422 42.82158,27.17578 45.02521,52.70509c0.14691,1.70196 0.21752,3.43056 0.21752,5.17012c0,27.8331 -19.18296,51.23601 -45.24276,57.87521c-3.66653,0.93377 -6.15729,4.34518 -6.15729,8.13165c0,5.49123 5.17909,9.68595 10.50755,8.33242c33.3586,-8.47243 58.02583,-38.59053 58.02583,-74.33923c0,-35.7487 -24.66722,-65.86684 -58.02583,-74.33923c-0.66605,-0.16919 -1.33964,-0.24648 -1.99107,-0.25098l0.00004,-0.00008l-0.00001,0z" />
+                            <line stroke="#ffffff" class="diagonal" stroke-width="20.5" x1="15.80624" y1="15.80624" x2="156.19375" y2="156.19375"/>
                         </svg>
-                        <div class="volume-wrap">
+                        <div class="volume-wrap" tabindex="0">
                             <div
                                 class="volume-controlling"
                                 @mousedown="volumeControllingStart"
@@ -118,18 +118,10 @@
                     <div class="screen-control-panel">
                         <svg class="fullscreen-icon" @click="fullscreen" x="0" y="0" width="23" height="23" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 298.667 298.667" style="enable-background:new 0 0 298.667 298.667;" xml:space="preserve">
                             <g :class="{'is-fullscreen': isFullscreen}">
-                                <g>
-                                    <polygon fill="#ffffff" points="42.667,192 0,192 0,298.667 106.667,298.667 106.667,256 42.667,256" />
-                                </g>
-                                <g>
-                                    <polygon fill="#ffffff" points="0,106.667 42.667,106.667 42.667,42.667 106.667,42.667 106.667,0 0,0" />
-                                </g>
-                                <g>
-                                    <polygon fill="#ffffff" points="192,0 192,42.667 256,42.667 256,106.667 298.667,106.667 298.667,0" />
-                                </g>
-                                <g>
-                                    <polygon fill="#ffffff" points="256,256 192,256 192,298.667 298.667,298.667 298.667,192 256,192" />
-                                </g>
+                                <g><polygon fill="#ffffff" points="42.667,192 0,192 0,298.667 106.667,298.667 106.667,256 42.667,256" /></g>
+                                <g><polygon fill="#ffffff" points="0,106.667 42.667,106.667 42.667,42.667 106.667,42.667 106.667,0 0,0" /></g>
+                                <g><polygon fill="#ffffff" points="192,0 192,42.667 256,42.667 256,106.667 298.667,106.667 298.667,0" /></g>
+                                <g><polygon fill="#ffffff" points="256,256 192,256 192,298.667 298.667,298.667 298.667,192 256,192" /></g>
                             </g>
                         </svg>
 
@@ -223,12 +215,10 @@
                     this.isFullscreen = screenfull.isFullscreen
                 });
             }
-
         },
         watch: {
             volume: function () {
                 this.video.volume = this.volume
-                console.log(this.volume)
                 if (this.volume == 0) {
                     this.volumeIcon = ''
                 } else if (0.5 < this.volume) {
@@ -256,69 +246,69 @@
                 }
             },
             abort: function () {
-                console.log('abort')
+                // console.log('abort')
             },
             canplay: function () {
-                console.log('canplay')
+                // console.log('canplay')
             },
             canplaythrough: function () {
-                console.log('canplaythrough')
+                // console.log('canplaythrough')
             },
             durationchange: function () {
-                console.log('durationchange')
+                // console.log('durationchange')
             },
             emptied: function () {
-                console.log('emptied')
+                // console.log('emptied')
             },
             ended: function () {
-                console.log('ended')
+                // console.log('ended')
             },
             error: function () {
-                console.log('error')
+                // console.log('error')
             },
             loadeddata: function () {
-                console.log('loadeddata')
+                // console.log('loadeddata')
             },
             loadedmetadata: function () {
-                console.log('loadedmetadata')
+                // console.log('loadedmetadata')
                 this.duration = this.video.duration
             },
             loadstart: function () {
-                console.log('loadstart')
+                // console.log('loadstart')
             },
             pause: function () {
                 this.fadeOut = true
                 this.paused = true
-                console.log('pause')
+                // console.log('pause')
             },
             play: function () {
-                console.log('play')
+                // console.log('play')
                 this.fadeOut = true
                 this.paused = false
             },
             playing: function () {
-                console.log('playing')
+                // console.log('playing')
             },
             progress: function () {
-                console.log('progress')
+                // console.log('progress')
             },
             ratechange: function () {
-                console.log('ratechange')
+                // console.log('ratechange')
             },
             seeked: function () {
-                console.log('seeked')
+                // console.log('seeked')
             },
             seeking: function () {
-                console.log('seeking')
+                // console.log('seeking')
             },
             stalled: function () {
-                console.log('stalled')
+                // console.log('stalled')
             },
             suspend: function () {
-                console.log('suspend')
+                // console.log('suspend')
             },
             timeupdate: function () {
-                console.log('timeupdate')
+                // console.log('timeupdate')
                 if (this.progressClientX) {
                     let bar = this.$refs.progressHolder.getBoundingClientRect()
                     let temp = ((this.progressClientX - bar.x) / (bar.width) * 100)
@@ -333,10 +323,10 @@
                 }
             },
             volumechange: function () {
-                console.log('volumechange')
+                // console.log('volumechange')
             },
             waiting: function () {
-                console.log('waiting')
+                // console.log('waiting')
             },
             seekStart: function (e) {
                 this.keepPlay = !this.paused
@@ -765,6 +755,7 @@
         position: absolute;
         left:33px;
         width: 60px;
+        height: 20px;
         margin: 0 7px;
     }
     .volume-controlling {
