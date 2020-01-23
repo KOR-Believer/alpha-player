@@ -1,5 +1,8 @@
 # alpha-player
 
+## Demo
+https://kor-believer.github.io/alpha-player
+
 ## Project setup
 ```
 npm install
