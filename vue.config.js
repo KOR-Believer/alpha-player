@@ -1,6 +1,9 @@
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/alpha-player/'
+    ? ( process.env.OUTPUT_DIR === 'docs' ? '/alpha-player/' : '/')
     : '/',
-  outputDir: 'docs'
+   outputDir: process.env.OUTPUT_DIR,
+   configureWebpack: {
+    externals: ['Hls']
+  }
 }

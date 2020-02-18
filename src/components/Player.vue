@@ -133,7 +133,7 @@
     </div>
 </template>
 <script>
-    import Hls from 'hls.js'
+    // import Hls from 'hls.js'
     import screenfull from 'screenfull'
     export default {
         name: 'Player',
@@ -179,7 +179,7 @@
                 isFullscreen: false,
             }
         },
-        mounted: function () {
+        mounted:  function () {
             this.videoTitle = this.title
             this.video = this.$refs.video
             if (this.src.substr(this.src.length - 4) == 'm3u8') {
@@ -751,7 +751,7 @@
         pointer-events: initial;
     }
 
-    .volume-wrap{
+    .volume-wrap {
         position: absolute;
         left:33px;
         width: 60px;
