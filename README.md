@@ -1,7 +1,7 @@
 # alpha-play
 
 ## Demo
-https://kor-believer.github.io/alpha-player
+https://kor-believer.github.io/alpha-play
 
 ## Project setup
 ```
