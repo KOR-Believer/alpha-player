@@ -1,4 +1,4 @@
-# alpha-player
+# alpha-play
 
 ## Demo
 https://kor-believer.github.io/alpha-player
